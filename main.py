@@ -1,5 +1,5 @@
 from fastapi import FastAPI, UploadFile, File, BackgroundTasks, Depends
-from .config import settings
+from config import settings
 from kubernetes import client, config
 from jinja2 import Template
 import boto3
