@@ -31,7 +31,6 @@ def trigger_spark_job(filename: str):
     job_id = str(uuid.uuid4())[:8]
     job_name = f"rag-job-{job_id}"
 
-    # Definicja YAML wprost w kodzie (Bezpieczniej z wcięciami)
     manifest = {
         "apiVersion": "sparkoperator.k8s.io/v1beta2",
         "kind": "SparkApplication",
@@ -42,26 +41,13 @@ def trigger_spark_job(filename: str):
         "spec": {
             "type": "Python",
             "mode": "cluster",
-            "image": "spark:3.5.0",
-            "imagePullPolicy": "IfNotPresent",
-
-
+            "image": "spark-with-script:v1",
+            "imagePullPolicy": "Never",
             "mainApplicationFile": "local:///opt/spark/scripts/etl-job.py",
-
             "sparkVersion": "3.5.0",
-            "restartPolicy": {"type": "Never"},  # ← zmień z OnFailure
-            "timeToLiveSeconds": 600,            # ← 10 minut zamiast 60 sekund
-
+            "restartPolicy": {"type": "Never"},
+            "timeToLiveSeconds": 600,
             "arguments": [f"s3a://raw-data/{filename}"],
-
-            # "deps": {
-            #     "repositories": ["https://repo1.maven.org/maven2"],
-            #     "packages": [
-            #         "org.neo4j:neo4j-connector-apache-spark_2.12:5.3.0",
-            #         "org.apache.hadoop:hadoop-aws:3.3.4",
-            #         "com.amazonaws:aws-java-sdk-bundle:1.12.262"
-            #     ]
-            # },
             "sparkConf": {
                 "spark.jars.ivy": "/tmp/.ivy",
                 "spark.driver.extraJavaOptions": "-Divy.cache.dir=/tmp/.ivy"
@@ -70,11 +56,7 @@ def trigger_spark_job(filename: str):
                 "cores": 1,
                 "memory": "512m",
                 "serviceAccount": "spark",
-                "nodeSelector": {"kubernetes.io/hostname": "rpi-server"},
-                "volumeMounts": [
-                    {"name": "scripts-vol", "mountPath": "/opt/spark/scripts"},
-                    {"name": "tmp-volume", "mountPath": "/tmp"}
-                ]
+                "nodeSelector": {"kubernetes.io/hostname": "rpi-server"}
             },
             "executor": {
                 "cores": 1,
@@ -93,17 +75,8 @@ def trigger_spark_job(filename: str):
                             }
                         }]
                     }
-                },
-                "volumeMounts": [
-                    {"name": "scripts-vol", "mountPath": "/opt/spark/scripts"},
-                    {"name": "tmp-volume", "mountPath": "/tmp"}
-                ]
-            },
-            # --- VOLUMES SĄ TERAZ POPRAWNIE NA DOLE ---
-            "volumes": [
-                {"name": "scripts-vol", "configMap": {"name": "spark-scripts"}},
-                {"name": "tmp-volume", "emptyDir": {}}
-            ]
+                }
+            }
         }
     }
 
