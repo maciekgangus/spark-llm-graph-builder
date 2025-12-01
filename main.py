@@ -60,14 +60,14 @@ def trigger_spark_job(filename: str):
             },
             "driver": {
                 "cores": 1,
-                "memory": "512m",
+                "memory": "1024m",
                 "serviceAccount": "spark",
                 "nodeSelector": {"kubernetes.io/hostname": "rpi-server"}
             },
             "executor": {
                 "cores": 1,
                 "instances": 1,
-                "memory": "2048m",
+                "memory": "4096m",
                 "affinity": {
                     "nodeAffinity": {
                         "preferredDuringSchedulingIgnoredDuringExecution": [{
