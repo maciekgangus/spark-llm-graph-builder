@@ -56,7 +56,11 @@ def trigger_spark_job(filename: str):
             "arguments": [f"s3a://raw-data/{filename}"],
             "sparkConf": {
                 "spark.jars.ivy": "/tmp/.ivy",
-                "spark.driver.extraJavaOptions": "-Divy.cache.dir=/tmp/.ivy"
+                "spark.driver.extraJavaOptions":
+                "-Divy.cache.dir=/tmp/.ivy",
+                "spark.network.timeout": "600s",  # Daj mu 10 minut na gadanie
+                "spark.executor.heartbeatInterval": "60s",  # Rzadsze sprawdzanie tętna
+                "spark.executor.memoryOverhead": "512m"
             },
             "driver": {
                 "cores": 1,
