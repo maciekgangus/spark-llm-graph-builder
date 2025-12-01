@@ -1,0 +1,68 @@
+apiVersion: "sparkoperator.k8s.io/v1beta2"
+kind: SparkApplication
+metadata:
+  name: "{{ job_name }}"
+  namespace: "graphrag"
+spec:
+  type: Python
+  mode: cluster
+  image: "spark:3.5.0"
+  imagePullPolicy: IfNotPresent
+  mainApplicationFile: "local:///opt/spark/scripts/etl-job.py"
+  sparkVersion: "3.5.0"
+  restartPolicy:
+    type: OnFailure
+  timeToLiveSeconds: 60
+
+  arguments:
+    - "{{ file_path }}"
+
+  deps:
+    repositories:
+      - "https://repo1.maven.org/maven2"
+    packages:
+      - "org.neo4j:neo4j-connector-apache-spark_2.12:5.3.10_for_spark_3"
+      - "org.apache.hadoop:hadoop-aws:3.3.4"
+      - "com.amazonaws:aws-java-sdk-bundle:1.12.262"
+
+  sparkConf:
+    "spark.jars.ivy": "/tmp/.ivy"
+    "spark.driver.extraJavaOptions": "-Divy.cache.dir=/tmp/.ivy"
+
+  driver:
+    cores: 1
+    memory: "512m"
+    serviceAccount: "spark"
+    nodeSelector:
+      kubernetes.io/hostname: "rpi-server"
+    volumeMounts:
+      - name: scripts-vol
+        mountPath: /opt/spark/scripts
+      - name: tmp-volume
+        mountPath: /tmp
+
+  executor:
+    cores: 1
+    instances: 1
+    memory: "2048m"
+    affinity:
+      nodeAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          preference:
+            matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values: ["fedora-maciek"]
+    volumeMounts:
+      - name: scripts-vol
+        mountPath: /opt/spark/scripts
+      - name: tmp-volume
+        mountPath: /tmp
+
+  volumes:
+    - name: scripts-vol
+      configMap:
+        name: spark-scripts
+    - name: tmp-volume
+      emptyDir: {}
