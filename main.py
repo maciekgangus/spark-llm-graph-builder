@@ -54,14 +54,14 @@ def trigger_spark_job(filename: str):
 
             "arguments": [f"s3a://raw-data/{filename}"],
 
-            "deps": {
-                "repositories": ["https://repo1.maven.org/maven2"],
-                "packages": [
-                    "org.neo4j:neo4j-connector-apache-spark_2.12:5.3.0",
-                    "org.apache.hadoop:hadoop-aws:3.3.4",
-                    "com.amazonaws:aws-java-sdk-bundle:1.12.262"
-                ]
-            },
+            # "deps": {
+            #     "repositories": ["https://repo1.maven.org/maven2"],
+            #     "packages": [
+            #         "org.neo4j:neo4j-connector-apache-spark_2.12:5.3.0",
+            #         "org.apache.hadoop:hadoop-aws:3.3.4",
+            #         "com.amazonaws:aws-java-sdk-bundle:1.12.262"
+            #     ]
+            # },
             "sparkConf": {
                 "spark.jars.ivy": "/tmp/.ivy",
                 "spark.driver.extraJavaOptions": "-Divy.cache.dir=/tmp/.ivy"
