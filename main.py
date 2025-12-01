@@ -23,7 +23,7 @@ k8s_api = client.CustomObjectsApi()
 s3 = boto3.client('s3',
                   endpoint_url=settings.endpoint_url,
                   aws_access_key_id=settings.s3_username,
-                  aws_secret_access_key=settings.s3.password,
+                  aws_secret_access_key=settings.s3_password,
                   )
 
 
