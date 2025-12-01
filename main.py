@@ -45,8 +45,8 @@ def trigger_spark_job(filename: str):
             "image": "spark:3.5.0",
             "imagePullPolicy": "IfNotPresent",
 
-            # --- ZMIANA ŚCIEŻKI NA /tmp ---
-            "mainApplicationFile": "local:///tmp/scripts/etl-job.py",
+
+            "mainApplicationFile": "local:///opt/spark/scripts/etl-job.py",
 
             "sparkVersion": "3.5.0",
             "restartPolicy": {"type": "OnFailure"},
@@ -72,7 +72,7 @@ def trigger_spark_job(filename: str):
                 "serviceAccount": "spark",
                 "nodeSelector": {"kubernetes.io/hostname": "rpi-server"},
                 "volumeMounts": [
-                    {"name": "scripts-vol", "mountPath": "/tmp/scripts"},
+                    {"name": "scripts-vol", "mountPath": "/opt/spark/scripts"},
                     {"name": "tmp-volume", "mountPath": "/tmp"}
                 ]
             },
@@ -95,7 +95,7 @@ def trigger_spark_job(filename: str):
                     }
                 },
                 "volumeMounts": [
-                    {"name": "scripts-vol", "mountPath": "/tmp/scripts"},
+                    {"name": "scripts-vol", "mountPath": "/opt/spark/scripts"},
                     {"name": "tmp-volume", "mountPath": "/tmp"}
                 ]
             },
