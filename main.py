@@ -21,9 +21,9 @@ k8s_api = client.CustomObjectsApi()
 
 # Konfiguracja MinIO
 s3 = boto3.client('s3',
-                  endpoint_url=settings.S3_ENDPOINT,
-                  aws_access_key_id=settings.S3_USERNAME,
-                  aws_secret_access_key=settings.S3_PASSWORD
+                  endpoint_url=settings.endpoint_url,
+                  aws_access_key_id=settings.s3_username,
+                  aws_secret_access_key=settings.s3.password,
                   )
 
 
