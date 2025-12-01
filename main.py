@@ -49,8 +49,8 @@ def trigger_spark_job(filename: str):
             "mainApplicationFile": "local:///opt/spark/scripts/etl-job.py",
 
             "sparkVersion": "3.5.0",
-            "restartPolicy": {"type": "OnFailure"},
-            "timeToLiveSeconds": 60,
+            "restartPolicy": {"type": "Never"},  # ← zmień z OnFailure
+            "timeToLiveSeconds": 600,            # ← 10 minut zamiast 60 sekund
 
             "arguments": [f"s3a://raw-data/{filename}"],
 
