@@ -53,7 +53,7 @@ def trigger_spark_job(filename: str):
         k8s_api.create_namespaced_custom_object(
             group="sparkoperator.k8s.io",
             version="v1beta2",
-            namespace="default",
+            namespace="graphrag",
             plural="sparkapplications",
             body=spark_manifest
         )
