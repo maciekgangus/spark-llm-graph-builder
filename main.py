@@ -35,7 +35,7 @@ def trigger_spark_job(filename: str):
     print(f"Generuję Job: {job_name}")
 
     # 1. Wczytaj szablon z pliku
-    with open("spark-template.yaml", "r") as f:
+    with open("Templates/spark-template.yaml", "r") as f:
         template_content = f.read()
 
     # 2. Wypełnij zmienne (Jinja2)
